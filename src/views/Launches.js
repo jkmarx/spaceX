@@ -68,8 +68,8 @@ class LaunchesView extends Component {
     }
 
     var filteredLaunches = [];
-    for (var i = 0; i < this.state.launches.length; i++) {
-      var launch = this.state.launches[i];
+    for (let i = 0; i < this.state.launches.length; i++) {
+      let launch = this.state.launches[i];
       if (launch.name.includes(filterTerm)) {
         filteredLaunches.push(launch);
       }
@@ -77,7 +77,7 @@ class LaunchesView extends Component {
 
     var launchDetails = [];
 
-    for (var ind = 0; ind < filteredLaunches.length; ind++) {
+    for (let ind = 0; ind < filteredLaunches.length; ind++) {
       let launch = filteredLaunches[ind];
 
       launchDetails.push(
