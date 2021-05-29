@@ -21,7 +21,6 @@ class LaunchesView extends Component {
     let body={options: {pagination: false}};
     if(searchText || filterTerm) {
       let term = searchText ? searchText : filterTerm;
-      // body.query = {"$text": {"$search": `${term}`, "$caseSensitive": "false"}};
       body.query={"name": `${term}`};
     }
     body.options.sort = sortField === 'Mission'? "name" : "rocket";
@@ -96,8 +95,6 @@ class LaunchesView extends Component {
   }
 
   debounceSearch = _.throttle(function(input){
-    // getFiles(bucketPath, fileView, params);
-    // setSearchText(input);
     this.filterAndSortLaunches(input);
     // leading is required due to state hook, otherwise it'll throttle will break
   }, 700, { leading: false });
