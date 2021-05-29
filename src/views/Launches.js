@@ -17,7 +17,11 @@ class LaunchesView extends Component {
   componentDidMount() {
     this.setState({ loading: true });
     let api = axios.create();
-    let body = {options: {pagination: false, populate: {path: "rocket", select: "name"}}};
+    let body = {options: {
+      pagination: false,
+      sort: 'name',
+      populate: {path: "rocket", select: "name"}
+    }};
     api
       .post("https://api.spacexdata.com/v4/launches/query", body)
       .then((launches) => {
@@ -33,7 +37,7 @@ class LaunchesView extends Component {
       });
   }
 
-  getContent(filterTerm='', sort='') {
+  getContent() {
     if (this.state.loading) {
       return <div> LOADING </div>;
     }
@@ -44,22 +48,17 @@ class LaunchesView extends Component {
 
     let filteredLaunches = [];
 
-    if (sort) {
-      this.state.launches.sort((aLaunch, bLaunch) => {
-        if(sort==='Rocket') {
-          return (aLaunch.name.toLowerCase() < bLaunch.name.toLowerCase()? -1:1);
-        } else {
-          return (aLaunch.rocket.name.toLowerCase() < bLaunch.rocket.name.toLowerCase()? -1:1);
-        }
-      });
-    }
-
     for (let i = 0; i < this.state.launches.length; i++) {
       let launch = this.state.launches[i];
-      let currentFilter = !filterTerm ? this.state.filterTerm : filterTerm;
-      if (launch.name.toLowerCase().includes(currentFilter.toLowerCase())) {
+      if (launch.name.toLowerCase().includes(this.state.filterTerm.toLowerCase())) {
         filteredLaunches.push(launch);
       }
+    }
+    // query default sort by mission name
+    if (this.state.sort==='Rocket') {
+      filteredLaunches.sort((aLaunch, bLaunch) => {
+        return (aLaunch.rocket.name.toLowerCase() < bLaunch.rocket.name.toLowerCase()? -1:1);
+      });
     }
 
     let launchDetails = [];
@@ -82,7 +81,6 @@ class LaunchesView extends Component {
 
   // wait for time elapse before filtering through array
   throttleSearch = _.throttle(function(input){
-    this.getContent(input);
     this.setState({ filterTerm: input });
   }, 700);
 
@@ -96,7 +94,6 @@ class LaunchesView extends Component {
       const currentSort = this.state.sort;
       // toggle sort
       let newSort = currentSort === 'Rocket' ? 'Mission' : 'Rocket';
-      this.getContent('', newSort);
       this.setState({ sort: newSort })
     };
 
@@ -109,7 +106,7 @@ class LaunchesView extends Component {
           </span>
           <button onClick={() => handleSortClick('Rocket')}>Sort by {this.state.sort}</button>
         </div>
-        { this.getContent() }
+        { this.getContent(this.state.filterTerm, this.state.sort) }
       </div>
     );
   }
