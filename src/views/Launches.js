@@ -21,7 +21,6 @@ class LaunchesView extends Component {
     api
       .post("https://api.spacexdata.com/v4/launches/query", body)
       .then((launches) => {
-        console.log(launches);
         this.setState({
           launches: launches.data.docs,
           loading: false,
