@@ -21,7 +21,8 @@ class LaunchesView extends Component {
     let body={options: {pagination: false}};
     if(searchText || filterTerm) {
       let term = searchText ? searchText : filterTerm;
-      body.query = {"$text": {"$search": `${term}`, "$caseSensitive": "false"}};
+      // body.query = {"$text": {"$search": `${term}`, "$caseSensitive": "false"}};
+      body.query={"name": `${term}`};
     }
     body.options.sort = sortField === 'Mission'? "name" : "rocket";
 
@@ -46,7 +47,6 @@ class LaunchesView extends Component {
     api
       .get("https://api.spacexdata.com/v4/launches")
       .then((launches) => {
-        console.log(launches.data);
         this.setState({
           launches: launches.data,
           loading: false,
