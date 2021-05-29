@@ -51,11 +51,11 @@ class LaunchesView extends Component {
 
     var launchDetails = [];
 
-    for (var i = 0; i < filteredLaunches.length; i++) {
-      var launch = filteredLaunches[i];
+    for (var ind = 0; ind < filteredLaunches.length; ind++) {
+      let launch = filteredLaunches[ind];
 
       launchDetails.push(
-        <li className="launch">
+        <li className="launch" key={launch.id}>
           <h2> {launch.name} </h2>
           <div> {launch.rocket} </div>
           <div className="launch-details-popup">
@@ -77,7 +77,7 @@ class LaunchesView extends Component {
     var handleSortClick = (sortBy) => {
       var currentSort = this.state.sort;
       var newSort;
-      if (currentSort == 'Rocket') {
+      if (currentSort === 'Rocket') {
         newSort = 'Mission'
       } else {
         newSort = 'Rocket'
