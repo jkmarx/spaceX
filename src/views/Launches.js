@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import axios from "axios";
 import _ from 'underscore';
-import qs from 'qs';
 
 var filterTerm = "";
 
@@ -20,12 +19,12 @@ class LaunchesView extends Component {
     this.setState({ loading: true });
     var api = axios.create();
     let body={options: {pagination: false}};
-    if(searchText) {
-      body.query = {"$text": {"$search": `${searchText}`, "$caseSensitive": "false"}};
+    if(searchText || filterTerm) {
+      let term = searchText ? searchText : filterTerm;
+      body.query = {"$text": {"$search": `${term}`, "$caseSensitive": "false"}};
     }
-    if(sortField) {
-      body.options.sort = sortField === 'Mission'? "name" : "rocket";
-    }
+    body.options.sort = sortField === 'Mission'? "name" : "rocket";
+
     api
       .post("https://api.spacexdata.com/v4/launches/query", body)
       .then((launches) => {
@@ -42,7 +41,6 @@ class LaunchesView extends Component {
   }
 
   componentDidMount() {
-    console.log('in component did mount');
     this.setState({ loading: true });
     var api = axios.create();
     api
@@ -124,9 +122,9 @@ class LaunchesView extends Component {
 
     return (
       <div>
-        <label htmlFor="term-filter">Term:</label>
-        <input name="filter" type="text" onChange={handleFilterChange} />
-        <div>
+        <div className="fixHeader">
+          <label htmlFor="term-filter">Term:</label>
+          <input name="filter" type="text" onChange={handleFilterChange} />
           <button onClick={() => handleSortClick('Rocket')}>Sort by {this.state.sort}</button>
         </div>
         {this.getContent()}
