@@ -99,7 +99,7 @@ class LaunchesView extends Component {
 
     return (
       <div>
-        <div className="fixHeader">
+        <div className="fixSearchForm">
           <span className="missionName">
             <label htmlFor="term-filter">Term:</label>
               <input name="filter" type="text" onChange={handleFilterChange} />
