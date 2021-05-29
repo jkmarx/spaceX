@@ -1,8 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import axios from "axios";
-
-var filterTerm = "";
+import _ from 'underscore';
 
 class LaunchesView extends Component {
   constructor(props) {
@@ -10,13 +9,14 @@ class LaunchesView extends Component {
     this.state = {
       launches: [],
       loading: false,
-      sort: 'Mission'
+      sort: 'Mission',
+      filterTerm: '',
     };
   }
 
   componentDidMount() {
     this.setState({ loading: true });
-    var api = axios.create();
+    let api = axios.create();
     api
       .get("https://api.spacexdata.com/v4/launches")
       .then((launches) => {
@@ -32,7 +32,7 @@ class LaunchesView extends Component {
       });
   }
 
-  getContent() {
+  getContent(filterTerm='', sort='') {
     if (this.state.loading) {
       return <div> LOADING </div>;
     }
@@ -41,26 +41,37 @@ class LaunchesView extends Component {
       return <div> NO DATA </div>;
     }
 
-    var filteredLaunches = [];
-    for (var i = 0; i < this.state.launches.length; i++) {
-      var launch = this.state.launches[i];
-      if (launch.name.includes(filterTerm)) {
+    let filteredLaunches = [];
+
+    if (sort) {
+      this.state.launches.sort((aLaunch, bLaunch) => {
+        if(sort==='Mission') {
+          return (aLaunch.name.toLowerCase() < bLaunch.name.toLowerCase()? -1:1);
+        } else {
+          return (aLaunch.rocket.toLowerCase() < bLaunch.rocket.toLowerCase()? -1:1);
+        }
+      });
+    }
+
+    for (let i = 0; i < this.state.launches.length; i++) {
+      let launch = this.state.launches[i];
+      let currentFilter = !filterTerm ? this.state.filterTerm : filterTerm;
+      if (launch.name.toLowerCase().includes(currentFilter.toLowerCase())) {
         filteredLaunches.push(launch);
       }
     }
 
-    var launchDetails = [];
-
-    for (var i = 0; i < filteredLaunches.length; i++) {
-      var launch = filteredLaunches[i];
+    let launchDetails = [];
+    for (let ind = 0; ind < filteredLaunches.length; ind++) {
+      let launch = filteredLaunches[ind];
 
       launchDetails.push(
-        <li className="launch">
+        <li className="launch" key={launch.id}>
           <h2> {launch.name} </h2>
-          <div> {launch.rocket} </div>
-          <div className="launch-details-popup">
+          <span> {launch.rocket} </span>
+          <span className="launch-details-popup">
             {launch.details || "No details to display"}
-          </div>
+          </span>
         </li>
       );
     }
@@ -68,37 +79,44 @@ class LaunchesView extends Component {
     return <ul>{launchDetails}</ul>;
   }
 
-  render() {
+  // wait for time elapse before filtering through array
+  throttleSearch = _.throttle(function(input){
+    this.getContent(input);
+    this.setState({ filterTerm: input });
+  }, 700);
 
-    var handleFilterChange = (e) => {
-      filterTerm = e.currentTarget.value;
+  render() {
+    const handleFilterChange = (event) => {
+      const text = event.target.value;
+      this.throttleSearch(text);
     };
 
-    var handleSortClick = (sortBy) => {
-      var currentSort = this.state.sort;
-      var newSort;
-      if (currentSort == 'Rocket') {
-        newSort = 'Mission'
-      } else {
-        newSort = 'Rocket'
-      }
+    const handleSortClick = (sortBy) => {
+      const currentSort = this.state.sort;
+      // toggle sort
+      let newSort = currentSort === 'Rocket' ? 'Mission' : 'Rocket';
+      this.getContent('', newSort);
       this.setState({ sort: newSort })
     };
 
     return (
       <div>
-        <label htmlFor="term-filter">Term:</label>
-        <input name="filter" type="text" onChange={handleFilterChange} />
-        <button onClick={() => handleSortClick('Rocket')}>Sort by {this.state.sort}</button>
-        {this.getContent()}
+        <div className="fixHeader">
+          <span className="missionName">
+            <label htmlFor="term-filter">Term:</label>
+              <input name="filter" type="text" onChange={handleFilterChange} />
+          </span>
+          <button onClick={() => handleSortClick('Rocket')}>Sort by {this.state.sort}</button>
+        </div>
+        { this.getContent() }
       </div>
     );
   }
 }
 
-var mapStateToProps = (state) => state;
+const mapStateToProps = (state) => state;
 
-var mapDispatchToProps = (dispatch) => ({
+const mapDispatchToProps = (dispatch) => ({
   dispatch,
 });
 
