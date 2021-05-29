@@ -16,7 +16,7 @@ class LaunchesView extends Component {
 
   componentDidMount() {
     this.setState({ loading: true });
-    var api = axios.create();
+    let api = axios.create();
     api
       .get("https://api.spacexdata.com/v4/launches")
       .then((launches) => {
@@ -61,8 +61,7 @@ class LaunchesView extends Component {
       }
     }
 
-    var launchDetails = [];
-
+    let launchDetails = [];
     for (let ind = 0; ind < filteredLaunches.length; ind++) {
       let launch = filteredLaunches[ind];
 
@@ -113,15 +112,15 @@ class LaunchesView extends Component {
           </span>
           <button onClick={() => handleSortClick('Rocket')}>Sort by {this.state.sort}</button>
         </div>
-        {this.getContent()}
+        { this.getContent() }
       </div>
     );
   }
 }
 
-var mapStateToProps = (state) => state;
+const mapStateToProps = (state) => state;
 
-var mapDispatchToProps = (dispatch) => ({
+const mapDispatchToProps = (dispatch) => ({
   dispatch,
 });
 
