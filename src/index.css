@@ -44,10 +44,6 @@ section {
   display: inline-flex;
 }
 
-#term-filter {
-
-}
-
 .launch-details-popup {
   display: none;
   position: fixed;
