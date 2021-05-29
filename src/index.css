@@ -1,5 +1,5 @@
 body {
-  margin: 0;
+  margin: 2em;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
@@ -31,13 +31,21 @@ section {
   padding: 20px;
 }
 
-.fixHeader {
-    /*position: fixed;*/
-    /*top: 0;*/
+.fixSearchForm {
+    position: fixed;
+    top: 60px;
+    padding-top: 1em;
+    width: 100%;
+    height: 40px;
+    background-color: white;
 }
 
 .launch:hover .launch-details-popup {
   display: inline-flex;
+}
+
+#term-filter {
+
 }
 
 .launch-details-popup {
@@ -48,4 +56,8 @@ section {
   border: 1px solid black;
   max-width: 200px;
   z-index: 100;
+}
+
+.formButton {
+    margin-left: 2em;
 }
