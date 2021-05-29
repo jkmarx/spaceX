@@ -17,11 +17,13 @@ class LaunchesView extends Component {
   componentDidMount() {
     this.setState({ loading: true });
     let api = axios.create();
+    let body = {options: {pagination: false, populate: {path: "rocket", select: "name"}}};
     api
-      .get("https://api.spacexdata.com/v4/launches")
+      .post("https://api.spacexdata.com/v4/launches/query", body)
       .then((launches) => {
+        console.log(launches);
         this.setState({
-          launches: launches.data,
+          launches: launches.data.docs,
           loading: false,
         });
       })
@@ -45,10 +47,10 @@ class LaunchesView extends Component {
 
     if (sort) {
       this.state.launches.sort((aLaunch, bLaunch) => {
-        if(sort==='Mission') {
+        if(sort==='Rocket') {
           return (aLaunch.name.toLowerCase() < bLaunch.name.toLowerCase()? -1:1);
         } else {
-          return (aLaunch.rocket.toLowerCase() < bLaunch.rocket.toLowerCase()? -1:1);
+          return (aLaunch.rocket.name.toLowerCase() < bLaunch.rocket.name.toLowerCase()? -1:1);
         }
       });
     }
@@ -68,7 +70,7 @@ class LaunchesView extends Component {
       launchDetails.push(
         <li className="launch" key={launch.id}>
           <h2> {launch.name} </h2>
-          <span> {launch.rocket} </span>
+          <span> {launch.rocket.name} </span>
           <span className="launch-details-popup">
             {launch.details || "No details to display"}
           </span>
