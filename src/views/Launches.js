@@ -84,10 +84,10 @@ class LaunchesView extends Component {
       launchDetails.push(
         <li className="launch" key={launch.id}>
           <h2> {launch.name} </h2>
-          <div> {launch.rocket} </div>
-          <div className="launch-details-popup">
+          <span> {launch.rocket} </span>
+          <span className="launch-details-popup">
             {launch.details || "No details to display"}
-          </div>
+          </span>
         </li>
       );
     }
@@ -123,8 +123,10 @@ class LaunchesView extends Component {
     return (
       <div>
         <div className="fixHeader">
-          <label htmlFor="term-filter">Term:</label>
-          <input name="filter" type="text" onChange={handleFilterChange} />
+          <span className="missionName">
+            <label htmlFor="term-filter">Term:</label>
+              <input name="filter" type="text" onChange={handleFilterChange} />
+          </span>
           <button onClick={() => handleSortClick('Rocket')}>Sort by {this.state.sort}</button>
         </div>
         {this.getContent()}

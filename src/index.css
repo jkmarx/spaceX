@@ -21,15 +21,19 @@ section {
   padding: 20px;
 }
 
+.fixHeader {
+    position: fixed;
+    top: 0;
+}
+
 .launch:hover .launch-details-popup {
-  display: block;
+  display: inline-flex;
 }
 
 .launch-details-popup {
   display: none;
-  position: absolute;
-  top: 20px;
-  left: 100px;
+  position: fixed;
+  padding: .5em;
   background: white;
   border: 1px solid black;
   max-width: 200px;
