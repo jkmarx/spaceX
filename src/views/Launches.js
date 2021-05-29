@@ -3,41 +3,15 @@ import { connect } from "react-redux";
 import axios from "axios";
 import _ from 'underscore';
 
-var filterTerm = "";
-
 class LaunchesView extends Component {
   constructor(props) {
     super(props);
     this.state = {
       launches: [],
       loading: false,
-      sort: 'Mission'
+      sort: 'Mission',
+      filterTerm: '',
     };
-  }
-
-  filterAndSortLaunches(searchText, sortField) {
-    this.setState({ loading: true });
-    var api = axios.create();
-    let body={options: {pagination: false}};
-    if(searchText || filterTerm) {
-      let term = searchText ? searchText : filterTerm;
-      body.query={"name": `${term}`};
-    }
-    body.options.sort = sortField === 'Mission'? "name" : "rocket";
-
-    api
-      .post("https://api.spacexdata.com/v4/launches/query", body)
-      .then((launches) => {
-        this.setState({
-          launches: launches.data.docs,
-          loading: false,
-        });
-      })
-      .catch((error) => {
-        this.setState({
-          loading: false,
-        });
-      });
   }
 
   componentDidMount() {
@@ -58,7 +32,7 @@ class LaunchesView extends Component {
       });
   }
 
-  getContent() {
+  getContent(filterTerm='', sort= '') {
     if (this.state.loading) {
       return <div> LOADING </div>;
     }
@@ -67,10 +41,22 @@ class LaunchesView extends Component {
       return <div> NO DATA </div>;
     }
 
-    var filteredLaunches = [];
+    let filteredLaunches = [];
+
+    if (sort) {
+      this.state.launches.sort((aLaunch, bLaunch) => {
+        if(sort==='Mission') {
+          return (aLaunch.name.toLowerCase() < bLaunch.name.toLowerCase()? -1:1);
+        } else {
+          return (aLaunch.rocket.toLowerCase() < bLaunch.rocket.toLowerCase()? -1:1);
+        }
+      });
+    }
+
     for (let i = 0; i < this.state.launches.length; i++) {
       let launch = this.state.launches[i];
-      if (launch.name.includes(filterTerm)) {
+      let currentFilter = !filterTerm ? this.state.filterTerm : filterTerm;
+      if (launch.name.toLowerCase().includes(currentFilter.toLowerCase())) {
         filteredLaunches.push(launch);
       }
     }
@@ -95,9 +81,9 @@ class LaunchesView extends Component {
   }
 
   debounceSearch = _.throttle(function(input){
-    this.filterAndSortLaunches(input);
-    // leading is required due to state hook, otherwise it'll throttle will break
-  }, 700, { leading: false });
+    this.getContent(input);
+    this.setState({ filterTerm: input });
+  }, 700);
 
   render() {
     const handleFilterChange = (event) => {
@@ -106,14 +92,15 @@ class LaunchesView extends Component {
     };
 
     const handleSortClick = (sortBy) => {
-      var currentSort = this.state.sort;
-      var newSort;
+      const currentSort = this.state.sort;
+      let newSort;
       if (currentSort === 'Rocket') {
         newSort = 'Mission'
       } else {
         newSort = 'Rocket'
       }
-      this.filterAndSortLaunches('', newSort);
+
+      this.getContent('', newSort);
       this.setState({ sort: newSort })
     };
 
