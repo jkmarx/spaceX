@@ -99,12 +99,10 @@ class LaunchesView extends Component {
 
     return (
       <div>
-        <div className="fixHeader">
-          <span className="missionName">
-            <label htmlFor="term-filter">Term:</label>
-              <input name="filter" type="text" onChange={handleFilterChange} />
-          </span>
-          <button onClick={() => handleSortClick('Rocket')}>Sort by {this.state.sort}</button>
+        <div className="fixSearchForm">
+          <label htmlFor="term-filter">Search Mission:</label>
+          <input id="term-filter" name="term-filter" type="text" onChange={handleFilterChange} />
+          <button className='formButton' onClick={() => handleSortClick('Rocket')}>Sort by {this.state.sort}</button>
         </div>
         { this.getContent() }
       </div>
