@@ -32,7 +32,7 @@ class LaunchesView extends Component {
       });
   }
 
-  getContent(filterTerm='', sort= '') {
+  getContent(filterTerm='', sort='') {
     if (this.state.loading) {
       return <div> LOADING </div>;
     }
@@ -79,7 +79,8 @@ class LaunchesView extends Component {
     return <ul>{launchDetails}</ul>;
   }
 
-  debounceSearch = _.throttle(function(input){
+  // wait for time elapse before filtering through array
+  throttleSearch = _.throttle(function(input){
     this.getContent(input);
     this.setState({ filterTerm: input });
   }, 700);
@@ -87,18 +88,13 @@ class LaunchesView extends Component {
   render() {
     const handleFilterChange = (event) => {
       const text = event.target.value;
-      this.debounceSearch(text);
+      this.throttleSearch(text);
     };
 
     const handleSortClick = (sortBy) => {
       const currentSort = this.state.sort;
-      let newSort;
-      if (currentSort === 'Rocket') {
-        newSort = 'Mission'
-      } else {
-        newSort = 'Rocket'
-      }
-
+      // toggle sort
+      let newSort = currentSort === 'Rocket' ? 'Mission' : 'Rocket';
       this.getContent('', newSort);
       this.setState({ sort: newSort })
     };
