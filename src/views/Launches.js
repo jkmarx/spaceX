@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import axios from "axios";
+import _ from 'underscore';
+import qs from 'qs';
 
 var filterTerm = "";
 
@@ -14,12 +16,39 @@ class LaunchesView extends Component {
     };
   }
 
+  filterAndSortLaunches(searchText, sortField) {
+    this.setState({ loading: true });
+    var api = axios.create();
+    let body={options: {pagination: false}};
+    if(searchText) {
+      body.query = {"$text": {"$search": `${searchText}`, "$caseSensitive": "false"}};
+    }
+    if(sortField) {
+      body.options.sort = sortField === 'Mission'? "name" : "rocket";
+    }
+    api
+      .post("https://api.spacexdata.com/v4/launches/query", body)
+      .then((launches) => {
+        this.setState({
+          launches: launches.data.docs,
+          loading: false,
+        });
+      })
+      .catch((error) => {
+        this.setState({
+          loading: false,
+        });
+      });
+  }
+
   componentDidMount() {
+    console.log('in component did mount');
     this.setState({ loading: true });
     var api = axios.create();
     api
       .get("https://api.spacexdata.com/v4/launches")
       .then((launches) => {
+        console.log(launches.data);
         this.setState({
           launches: launches.data,
           loading: false,
@@ -68,13 +97,20 @@ class LaunchesView extends Component {
     return <ul>{launchDetails}</ul>;
   }
 
-  render() {
+  debounceSearch = _.throttle(function(input){
+    // getFiles(bucketPath, fileView, params);
+    // setSearchText(input);
+    this.filterAndSortLaunches(input);
+    // leading is required due to state hook, otherwise it'll throttle will break
+  }, 700, { leading: false });
 
-    var handleFilterChange = (e) => {
-      filterTerm = e.currentTarget.value;
+  render() {
+    const handleFilterChange = (event) => {
+      const text = event.target.value;
+      this.debounceSearch(text);
     };
 
-    var handleSortClick = (sortBy) => {
+    const handleSortClick = (sortBy) => {
       var currentSort = this.state.sort;
       var newSort;
       if (currentSort === 'Rocket') {
@@ -82,6 +118,7 @@ class LaunchesView extends Component {
       } else {
         newSort = 'Rocket'
       }
+      this.filterAndSortLaunches('', newSort);
       this.setState({ sort: newSort })
     };
 
@@ -89,7 +126,9 @@ class LaunchesView extends Component {
       <div>
         <label htmlFor="term-filter">Term:</label>
         <input name="filter" type="text" onChange={handleFilterChange} />
-        <button onClick={() => handleSortClick('Rocket')}>Sort by {this.state.sort}</button>
+        <div>
+          <button onClick={() => handleSortClick('Rocket')}>Sort by {this.state.sort}</button>
+        </div>
         {this.getContent()}
       </div>
     );
