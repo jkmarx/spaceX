@@ -4,12 +4,14 @@ import Launches from './views/Launches';
 class App extends Component {
   render() {
     return (
-      <main className={`layout`}>
-        <section>
-          <h2> SpaceX Launches </h2>
-          <Launches />
-        </section>
-      </main>
+      <div>
+          <header className="sticky">
+            <h2> SpaceX Launches </h2>
+          </header>
+          <main className={`layout`}>
+            <Launches />
+          </main>
+      </div>
     );
   }
 }
