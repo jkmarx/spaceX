@@ -106,7 +106,7 @@ class LaunchesView extends Component {
           </span>
           <button onClick={() => handleSortClick('Rocket')}>Sort by {this.state.sort}</button>
         </div>
-        { this.getContent(this.state.filterTerm, this.state.sort) }
+        { this.getContent() }
       </div>
     );
   }
