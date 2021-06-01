@@ -5,9 +5,9 @@ You should be able to easily find the information there that you need to make th
 
 ### 1) Fixed bugs
 Filter launches by mission name and throttled searches.
-Filter ignores letter case.  
+Filter will ignore letter case.  
 Moved hover panel next to rocket name.
-Fix title and search/sort form and only have the launches scroll when overflowing.
+Fix the position of title and search/sort form. Only launches will scroll when overflowing.
 
 ### 2) Added features
 Sorting of the launches by Launch Name and Rocket Name. Rocket name returned leveraging query and populate.
