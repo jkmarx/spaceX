@@ -9,7 +9,7 @@ class LaunchesView extends Component {
     this.state = {
       launches: [],
       loading: false,
-      sort: 'Mission',
+      sort: 'Rocket',
       filterTerm: '',
     };
   }
@@ -55,7 +55,7 @@ class LaunchesView extends Component {
       }
     }
     // query default sort by mission name
-    if (this.state.sort==='Rocket') {
+    if (this.state.sort==='Mission') {
       filteredLaunches.sort((aLaunch, bLaunch) => {
         return (aLaunch.rocket.name.toLowerCase() < bLaunch.rocket.name.toLowerCase()? -1:1);
       });
