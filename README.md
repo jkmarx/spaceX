@@ -16,9 +16,9 @@ Sorting of the launches by Launch Name and Rocket Name. Rocket name returned lev
 Add tests for sort and search features
 Fix hover panel which is positioned next to rocket name. 1) switch cursor to pointer 2) hover on an info icon for clarity
 Refactor for clarity and add comments
+With the scrolling overflow, the launch hover panel fails to show.
 Add and test a feature where clicking on any given launch will load and display information about the rocket used in that launch in a modal window on the same page. Include the images of the rocket referenced in the api. 
 Fix dependencies with high vulnerabilities
-With the scrolling overflow launches, the launch popover fails to show.
 
 ## App Setup
 
